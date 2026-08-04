@@ -4,6 +4,9 @@
     class="shopify-design-mode"
   {% endif %}
   lang="{{ request.locale.iso_code }}"
+  {% if request.locale.iso_code == 'ar' or request.locale.iso_code == 'ar-SA' or request.locale.iso_code == 'ar-AE' or request.locale.iso_code == 'ar-EG' or request.locale.iso_code == 'ar-IQ' or request.locale.iso_code == 'ar-JO' or request.locale.iso_code == 'ar-KW' or request.locale.iso_code == 'ar-LB' or request.locale.iso_code == 'ar-OM' or request.locale.iso_code == 'ar-QA' or request.locale.iso_code == 'ar-SY' or request.locale.iso_code == 'ar-YE' %}
+    dir="rtl"
+  {% endif %}
 >
   <head>
     {%- if settings.favicon != blank -%}
@@ -38,6 +41,9 @@
     {%- render 'meta-tags' -%}
     {%- render 'stylesheets' -%}
     {{ 'avicare-brand.css' | asset_url | stylesheet_tag: preload: true }}
+    {% if request.locale.iso_code == 'ar' or request.locale.iso_code == 'ar-SA' or request.locale.iso_code == 'ar-AE' or request.locale.iso_code == 'ar-EG' or request.locale.iso_code == 'ar-IQ' or request.locale.iso_code == 'ar-JO' or request.locale.iso_code == 'ar-KW' or request.locale.iso_code == 'ar-LB' or request.locale.iso_code == 'ar-OM' or request.locale.iso_code == 'ar-QA' or request.locale.iso_code == 'ar-SY' or request.locale.iso_code == 'ar-YE' %}
+      {{ 'rtl.css' | asset_url | stylesheet_tag: preload: true }}
+    {% endif %}
     {%- render 'fonts' -%}
     {%- render 'scripts' -%}
     {%- render 'theme-styles-variables' -%}

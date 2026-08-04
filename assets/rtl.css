@@ -1,0 +1,33 @@
+html[dir='rtl'] {
+  direction: rtl;
+  unicode-bidi: plaintext;
+}
+
+html[dir='rtl'] body {
+  direction: rtl;
+}
+
+html[dir='rtl'] .text-left {
+  text-align: right;
+}
+
+html[dir='rtl'] .text-right {
+  text-align: left;
+}
+
+html[dir='rtl'] .justify-left {
+  justify-content: flex-end;
+}
+
+html[dir='rtl'] .justify-right {
+  justify-content: flex-start;
+}
+
+html[dir='rtl'] .flex-row-reverse {
+  flex-direction: row-reverse;
+}
+
+html[dir='rtl'] .icon-mirror,
+html[dir='rtl'] .svg-wrapper {
+  transform: scaleX(-1);
+}
