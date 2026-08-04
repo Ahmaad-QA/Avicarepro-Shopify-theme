@@ -37,6 +37,7 @@
 
     {%- render 'meta-tags' -%}
     {%- render 'stylesheets' -%}
+    {{ 'avicare-brand.css' | asset_url | stylesheet_tag: preload: true }}
     {%- render 'fonts' -%}
     {%- render 'scripts' -%}
     {%- render 'theme-styles-variables' -%}

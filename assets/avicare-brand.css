@@ -1,0 +1,56 @@
+:root {
+  /* Brand color tokens */
+  --avicare-primary: #0F4D3A;
+  --avicare-secondary: #1A1A1A;
+  --avicare-accent: #D4AF37;
+  --avicare-success: #2E7D4B;
+  --avicare-warning: #C98A16;
+  --avicare-error: #B63A3A;
+  --avicare-background: #F8F7F3;
+  --avicare-surface: #FCFBF7;
+  --avicare-border: #E6E0D2;
+  --avicare-text: #1A1A1A;
+  --avicare-muted-text: #5E5A54;
+
+  /* Typography aliases */
+  --avicare-font-heading: var(--font-heading--family, var(--font-body--family));
+  --avicare-font-body: var(--font-body--family, var(--font-paragraph--family));
+  --avicare-font-accent: var(--font-accent--family, var(--font-heading--family));
+
+  /* Spacing aliases */
+  --avicare-space-1: 0.25rem;
+  --avicare-space-2: 0.5rem;
+  --avicare-space-3: 0.75rem;
+  --avicare-space-4: 1rem;
+  --avicare-space-5: 1.5rem;
+  --avicare-space-6: 2rem;
+  --avicare-space-7: 3rem;
+  --avicare-space-8: 4rem;
+
+  /* Radius aliases */
+  --avicare-radius-sm: 0.5rem;
+  --avicare-radius-md: 0.875rem;
+  --avicare-radius-lg: 1.25rem;
+  --avicare-radius-xl: 1.5rem;
+  --avicare-radius-pill: 999px;
+
+  /* Shadow aliases */
+  --avicare-shadow-sm: 0 1px 2px rgba(15, 77, 58, 0.08);
+  --avicare-shadow-md: 0 8px 24px rgba(15, 77, 58, 0.1);
+  --avicare-shadow-lg: 0 16px 40px rgba(15, 77, 58, 0.14);
+
+  /* Transition aliases */
+  --avicare-transition-fast: 160ms ease;
+  --avicare-transition-base: 240ms ease;
+  --avicare-transition-slow: 360ms ease;
+}
+
+:root[dir='rtl'] {
+  --avicare-text-align-start: right;
+  --avicare-text-align-end: left;
+}
+
+:root:not([dir='rtl']) {
+  --avicare-text-align-start: left;
+  --avicare-text-align-end: right;
+}
