@@ -49,7 +49,7 @@ html[scroll-lock] .page-wrapper {
   display: flex;
   flex-direction: column;
   min-height: 100dvh;
-  transition: margin-right var(--animation-speed) var(--animation-timing-fade-out);
+  transition: margin-inline-end var(--animation-speed) var(--animation-timing-fade-out);
 }
 
 @media (min-width: 990px) {
@@ -67,7 +67,7 @@ html[scroll-lock] .page-wrapper {
 }
 
 .page-wrapper--drawer-open {
-  margin-right: var(--theme-drawer-width, var(--sidebar-width));
+  margin-inline-end: var(--theme-drawer-width, var(--sidebar-width));
   transition-timing-function: var(--animation-timing-fade-in);
 }
 
@@ -414,8 +414,7 @@ p:empty {
   grid-column: 1 / -1;
 
   @media screen and (min-width: 750px) {
-    padding-left: var(--page-margin);
-    padding-right: var(--page-margin);
+    padding-inline: var(--page-margin);
   }
 }
 
@@ -548,9 +547,9 @@ p:empty {
 }
 
 .text-left {
-  --text-align: left;
+  --text-align: start;
 
-  text-align: left;
+  text-align: start;
 }
 
 .text-center {
@@ -560,9 +559,9 @@ p:empty {
 }
 
 .text-right {
-  --text-align: right;
+  --text-align: end;
 
-  text-align: right;
+  text-align: end;
 }
 
 .text-inherit {
@@ -574,7 +573,7 @@ p:empty {
 }
 
 .justify-left {
-  justify-content: left;
+  justify-content: start;
 }
 
 .justify-center {
@@ -582,7 +581,7 @@ p:empty {
 }
 
 .justify-right {
-  justify-content: right;
+  justify-content: end;
 }
 
 .title--aligned-center {
@@ -1227,7 +1226,7 @@ details[open] > summary .icon-plus .vertical {
 .close-button {
   position: fixed;
   top: var(--margin-lg);
-  right: var(--margin-lg);
+  inset-inline-end: var(--margin-lg);
   width: var(--minimum-touch-target);
   height: var(--minimum-touch-target);
   z-index: var(--layer-flat);
@@ -1517,7 +1516,7 @@ product-price.text-block:is(.h1, .h2, .h3, .h4, .h5, .h6) .volume-pricing-note {
 
 .field__input {
   flex-grow: 1;
-  text-align: left;
+  text-align: start;
   border-radius: var(--style-border-radius-inputs);
   transition: box-shadow var(--animation-speed) ease, background-color var(--animation-speed) ease;
   padding: var(--input-padding);
@@ -1549,7 +1548,7 @@ product-price.text-block:is(.h1, .h2, .h3, .h4, .h5, .h6) .volume-pricing-note {
 .field__label {
   color: rgb(var(--color-input-text-rgb) / var(--opacity-80));
   font-size: var(--font-paragraph--size);
-  left: var(--input-padding-x);
+  inset-inline-start: var(--input-padding-x);
   top: 50%;
   transform: translateY(-50%);
   margin-bottom: 0;
@@ -1656,7 +1655,7 @@ input[type='radio'] {
   content: '';
   position: absolute;
   top: 50%;
-  left: 50%;
+  inset-inline-start: 50%;
   transform: translate(-50%, -50%);
   width: calc(var(--checkbox-size) / 2);
   height: calc(var(--checkbox-size) / 2);
@@ -1705,7 +1704,7 @@ input[type='radio'] {
   content: '';
   position: absolute;
   top: 50%;
-  left: 50%;
+  inset-inline-start: 50%;
   transform: translate(-50%, -50%);
   width: var(--checkbox-size);
   height: var(--checkbox-size);
