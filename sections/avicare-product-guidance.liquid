@@ -1,0 +1,266 @@
+{%- assign rendered_detail_count = 0 -%}
+{%- capture details_markup -%}
+  {%- for block in section.blocks -%}
+    {%- assign detail_content = block.settings.content | strip_html | strip -%}
+    {%- if block.settings.heading != blank and detail_content != blank -%}
+      {%- assign open_detail = false -%}
+      {%- if section.settings.open_first_item and rendered_detail_count == 0 -%}
+        {%- assign open_detail = true -%}
+      {%- endif -%}
+      {%- assign rendered_detail_count = rendered_detail_count | plus: 1 -%}
+
+      {%- capture detail_children -%}
+        <details
+          class="details"
+          data-testid="accordion-details"
+          {% if open_detail %}
+            open
+          {% endif %}
+          {{ block.shopify_attributes }}
+        >
+          <summary class="details__header">
+            <span class="avicare-product-guidance__summary-text">{{ block.settings.heading | escape }}</span>
+            <span class="svg-wrapper icon-plus" aria-hidden="true">
+              {{- 'icon-plus.svg' | inline_asset_content -}}
+            </span>
+          </summary>
+
+          <div class="details-content">
+            <div class="avicare-product-guidance__detail-content rte">
+              {{ block.settings.content }}
+            </div>
+          </div>
+        </details>
+      {%- endcapture -%}
+
+      {% render 'accordion-custom-component',
+        children: detail_children,
+        open: open_detail,
+        open_by_default_on_desktop: open_detail,
+        open_by_default_on_mobile: open_detail
+      %}
+    {%- endif -%}
+  {%- endfor -%}
+{%- endcapture -%}
+
+<section
+  class="avicare-product-guidance section section--page-width"
+  {% if section.settings.heading != blank %}
+    aria-labelledby="AvicareProductGuidanceHeading-{{ section.id }}"
+  {% endif %}
+>
+  <div class="avicare-product-guidance__inner">
+    <div class="avicare-product-guidance__intro">
+      {% if section.settings.eyebrow != blank %}
+        <p class="avicare-product-guidance__eyebrow">{{ section.settings.eyebrow | escape }}</p>
+      {% endif %}
+
+      {% if section.settings.heading != blank %}
+        <h2 id="AvicareProductGuidanceHeading-{{ section.id }}" class="avicare-product-guidance__heading">
+          {{ section.settings.heading | escape }}
+        </h2>
+      {% endif %}
+
+      {% if section.settings.body != blank %}
+        <div class="avicare-product-guidance__body rte">{{ section.settings.body }}</div>
+      {% endif %}
+    </div>
+
+    {%- assign details_markup = details_markup | strip -%}
+    {%- if details_markup != blank -%}
+      <div class="accordion accordion--plus avicare-product-guidance__accordion">
+        {{ details_markup }}
+      </div>
+    {%- endif -%}
+  </div>
+</section>
+
+{% render 'accordion-styles' %}
+
+{% stylesheet %}
+  .avicare-product-guidance {
+    padding-block: var(--avicare-space-8);
+    color: var(--avicare-text);
+    text-align: start;
+  }
+
+  .avicare-product-guidance__inner {
+    max-inline-size: 52rem;
+    margin-inline: auto;
+  }
+
+  .avicare-product-guidance__intro {
+    margin-block-end: var(--avicare-space-6);
+  }
+
+  .avicare-product-guidance__eyebrow {
+    margin: 0;
+    margin-block-end: var(--avicare-space-3);
+    color: var(--avicare-primary);
+    font-family: var(--avicare-font-accent);
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .avicare-product-guidance__heading {
+    margin: 0;
+    color: var(--avicare-primary);
+    font-family: var(--avicare-font-heading);
+  }
+
+  .avicare-product-guidance__body {
+    margin-block-start: var(--avicare-space-4);
+    color: var(--avicare-muted-text);
+    font-family: var(--avicare-font-body);
+  }
+
+  .avicare-product-guidance__accordion {
+    border-block-start: 1px solid var(--avicare-border);
+  }
+
+  .avicare-product-guidance__accordion accordion-custom {
+    display: block;
+    border-block-end: 1px solid var(--avicare-border);
+  }
+
+  .avicare-product-guidance__accordion .details__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-block-size: var(--minimum-touch-target);
+    gap: var(--avicare-space-4);
+    padding-block: var(--avicare-space-4);
+    color: var(--avicare-primary);
+    font-family: var(--avicare-font-heading);
+    font-size: var(--font-h6--size);
+    font-weight: 700;
+    line-height: var(--font-h6--line-height);
+    cursor: pointer;
+  }
+
+  .avicare-product-guidance__accordion .details__header:focus-visible {
+    outline: 2px solid var(--avicare-accent);
+    outline-offset: 2px;
+  }
+
+  .avicare-product-guidance__summary-text {
+    min-inline-size: 0;
+    overflow-wrap: anywhere;
+  }
+
+  .avicare-product-guidance__accordion .icon-plus {
+    flex: 0 0 auto;
+  }
+
+  .avicare-product-guidance__accordion details[open] .icon-plus {
+    transform: rotate(45deg);
+  }
+
+  .avicare-product-guidance__detail-content {
+    padding-block-end: var(--avicare-space-5);
+    color: var(--avicare-muted-text);
+    font-family: var(--avicare-font-body);
+    overflow-wrap: anywhere;
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "AVICARE Product Guidance",
+  "enabled_on": {
+    "templates": ["product"]
+  },
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "Product guidance"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Usage and product details"
+    },
+    {
+      "type": "richtext",
+      "id": "body",
+      "label": "Body",
+      "default": "<p>Review the individual product guidance before use. Always follow the instructions provided on the product label.</p>"
+    },
+    {
+      "type": "checkbox",
+      "id": "open_first_item",
+      "label": "Open first item by default",
+      "default": false
+    }
+  ],
+  "blocks": [
+    {
+      "type": "detail",
+      "name": "Product detail",
+      "limit": 5,
+      "settings": [
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Heading",
+          "default": "Detail heading"
+        },
+        {
+          "type": "richtext",
+          "id": "content",
+          "label": "Content",
+          "default": "<p>Add approved product guidance through the Theme Editor.</p>"
+        }
+      ]
+    }
+  ],
+  "max_blocks": 5,
+  "presets": [
+    {
+      "name": "AVICARE Product Guidance",
+      "category": "Product",
+      "blocks": [
+        {
+          "type": "detail",
+          "settings": {
+            "heading": "How to use",
+            "content": "<p>Add product-specific usage instructions through the Theme Editor or connect this field to a product metafield.</p>"
+          }
+        },
+        {
+          "type": "detail",
+          "settings": {
+            "heading": "Dosage",
+            "content": "<p>Add the exact dosage shown on the approved product label. Do not estimate or generalize dosage instructions.</p>"
+          }
+        },
+        {
+          "type": "detail",
+          "settings": {
+            "heading": "Product details",
+            "content": "<p>Add format, quantity, intended use, and other approved product information.</p>"
+          }
+        },
+        {
+          "type": "detail",
+          "settings": {
+            "heading": "Storage",
+            "content": "<p>Store according to the instructions shown on the product packaging and keep the container properly closed.</p>"
+          }
+        },
+        {
+          "type": "detail",
+          "settings": {
+            "heading": "Important notes",
+            "content": "<p>Use only as directed. This nutritional support product is not a substitute for professional veterinary diagnosis or treatment.</p>"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

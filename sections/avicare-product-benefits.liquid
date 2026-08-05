@@ -1,0 +1,344 @@
+{%- capture benefits_markup -%}
+  {%- for block in section.blocks -%}
+    {%- if block.type == 'benefit' -%}
+      {%- assign benefit_image = block.settings.image -%}
+      {%- if benefit_image != blank or block.settings.heading != blank or block.settings.text != blank -%}
+        <article class="avicare-product-benefits__card" {{ block.shopify_attributes }}>
+          {%- if benefit_image != blank -%}
+            {%- assign benefit_image_alt = block.settings.image_alt | default: benefit_image.alt -%}
+            <div class="avicare-product-benefits__media">
+              {{
+                benefit_image
+                | image_url: width: 240
+                | image_tag:
+                  loading: 'lazy',
+                  widths: '80, 120, 160, 240',
+                  sizes: '80px',
+                  alt: benefit_image_alt,
+                  class: 'avicare-product-benefits__image'
+              }}
+            </div>
+          {%- endif -%}
+
+          {%- if block.settings.heading != blank -%}
+            <h3 class="avicare-product-benefits__card-heading">{{ block.settings.heading | escape }}</h3>
+          {%- endif -%}
+
+          {%- if block.settings.text != blank -%}
+            <p class="avicare-product-benefits__card-text">{{ block.settings.text | escape }}</p>
+          {%- endif -%}
+        </article>
+      {%- endif -%}
+    {%- endif -%}
+  {%- endfor -%}
+{%- endcapture -%}
+
+{%- capture trust_badges_markup -%}
+  {%- for block in section.blocks -%}
+    {%- if block.type == 'trust_badge' and block.settings.label != blank -%}
+      <li class="avicare-product-benefits__trust-badge" {{ block.shopify_attributes }}>
+        <span class="avicare-product-benefits__trust-mark" aria-hidden="true"></span>
+        <span>{{ block.settings.label | escape }}</span>
+      </li>
+    {%- endif -%}
+  {%- endfor -%}
+{%- endcapture -%}
+
+<section
+  class="avicare-product-benefits section section--page-width"
+  {% if section.settings.heading != blank %}
+    aria-labelledby="AvicareProductBenefitsHeading-{{ section.id }}"
+  {% endif %}
+>
+  <div class="avicare-product-benefits__intro">
+    {% if section.settings.eyebrow != blank %}
+      <p class="avicare-product-benefits__eyebrow">{{ section.settings.eyebrow | escape }}</p>
+    {% endif %}
+
+    {% if section.settings.heading != blank %}
+      <h2 id="AvicareProductBenefitsHeading-{{ section.id }}" class="avicare-product-benefits__heading">
+        {{ section.settings.heading | escape }}
+      </h2>
+    {% endif %}
+
+    {% if section.settings.body != blank %}
+      <div class="avicare-product-benefits__body rte">{{ section.settings.body }}</div>
+    {% endif %}
+  </div>
+
+  {%- assign benefits_markup = benefits_markup | strip -%}
+  {%- if benefits_markup != blank -%}
+    <div class="avicare-product-benefits__grid">
+      {{ benefits_markup }}
+    </div>
+  {%- endif -%}
+
+  {%- assign trust_badges_markup = trust_badges_markup | strip -%}
+  {%- if trust_badges_markup != blank -%}
+    <ul class="avicare-product-benefits__trust-list" role="list">
+      {{ trust_badges_markup }}
+    </ul>
+  {%- endif -%}
+</section>
+
+{% stylesheet %}
+  .avicare-product-benefits {
+    padding-block: var(--avicare-space-8);
+    color: var(--avicare-text);
+    text-align: start;
+  }
+
+  .avicare-product-benefits__intro {
+    max-inline-size: 52rem;
+    margin-block-end: var(--avicare-space-7);
+  }
+
+  .avicare-product-benefits__eyebrow {
+    margin: 0;
+    margin-block-end: var(--avicare-space-3);
+    color: var(--avicare-primary);
+    font-family: var(--avicare-font-accent);
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .avicare-product-benefits__heading {
+    margin: 0;
+    color: var(--avicare-primary);
+    font-family: var(--avicare-font-heading);
+  }
+
+  .avicare-product-benefits__body {
+    margin-block-start: var(--avicare-space-4);
+    color: var(--avicare-muted-text);
+    font-family: var(--avicare-font-body);
+  }
+
+  .avicare-product-benefits__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--avicare-space-5);
+    inline-size: 100%;
+  }
+
+  .avicare-product-benefits__card {
+    min-inline-size: 0;
+    block-size: 100%;
+    padding: var(--avicare-space-5);
+    border: 1px solid var(--avicare-border);
+    border-radius: var(--avicare-radius-md);
+    background: var(--avicare-surface);
+    box-shadow: var(--avicare-shadow-sm);
+  }
+
+  .avicare-product-benefits__media {
+    display: grid;
+    place-items: center;
+    inline-size: 5rem;
+    block-size: 5rem;
+    margin-block-end: var(--avicare-space-4);
+    overflow: hidden;
+    border: 1px solid var(--avicare-border);
+    border-radius: var(--avicare-radius-sm);
+    background: var(--avicare-background);
+  }
+
+  .avicare-product-benefits__image {
+    inline-size: 100%;
+    block-size: 100%;
+    object-fit: contain;
+  }
+
+  .avicare-product-benefits__card-heading {
+    margin: 0;
+    color: var(--avicare-primary);
+    font-family: var(--avicare-font-heading);
+  }
+
+  .avicare-product-benefits__card-text {
+    margin: 0;
+    margin-block-start: var(--avicare-space-3);
+    color: var(--avicare-muted-text);
+    font-family: var(--avicare-font-body);
+  }
+
+  .avicare-product-benefits__trust-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--avicare-space-3);
+    margin: 0;
+    margin-block-start: var(--avicare-space-6);
+    padding: 0;
+    list-style: none;
+  }
+
+  .avicare-product-benefits__trust-badge {
+    display: inline-flex;
+    align-items: center;
+    min-inline-size: 0;
+    gap: var(--avicare-space-2);
+    padding: var(--avicare-space-3) var(--avicare-space-4);
+    border: 1px solid var(--avicare-border);
+    border-radius: var(--avicare-radius-pill);
+    background: var(--avicare-surface);
+    color: var(--avicare-text);
+    font-family: var(--avicare-font-body);
+    font-weight: 600;
+  }
+
+  .avicare-product-benefits__trust-mark {
+    flex: 0 0 auto;
+    inline-size: var(--avicare-space-2);
+    block-size: var(--avicare-space-2);
+    border-radius: var(--avicare-radius-pill);
+    background: var(--avicare-accent);
+  }
+
+  @media screen and (min-width: 750px) {
+    .avicare-product-benefits__grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media screen and (min-width: 990px) {
+    .avicare-product-benefits__grid {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "AVICARE Product Benefits",
+  "enabled_on": {
+    "templates": ["product"]
+  },
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "Targeted product support"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Designed with a clear purpose"
+    },
+    {
+      "type": "richtext",
+      "id": "body",
+      "label": "Body",
+      "default": "<p>Highlight the key nutritional benefits and quality principles associated with this AVICARE PRO formula.</p>"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "benefit",
+      "name": "Benefit",
+      "limit": 6,
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "text",
+          "id": "image_alt",
+          "label": "Image alt text",
+          "info": "Uses the selected image’s alt text when blank. Leave both blank for a decorative image."
+        },
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Heading",
+          "default": "Benefit heading"
+        },
+        {
+          "type": "textarea",
+          "id": "text",
+          "label": "Text",
+          "default": "Benefit description."
+        }
+      ]
+    },
+    {
+      "type": "trust_badge",
+      "name": "Trust badge",
+      "limit": 4,
+      "settings": [
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Label",
+          "default": "Trust indicator"
+        }
+      ]
+    }
+  ],
+  "max_blocks": 10,
+  "presets": [
+    {
+      "name": "AVICARE Product Benefits",
+      "category": "Product",
+      "blocks": [
+        {
+          "type": "benefit",
+          "settings": {
+            "heading": "Targeted nutritional support",
+            "text": "Supports the nutritional needs associated with this product’s intended purpose."
+          }
+        },
+        {
+          "type": "benefit",
+          "settings": {
+            "heading": "Carefully selected ingredients",
+            "text": "Developed with ingredients selected for consistency and product quality."
+          }
+        },
+        {
+          "type": "benefit",
+          "settings": {
+            "heading": "Easy program integration",
+            "text": "Designed for practical use within a structured care or performance program."
+          }
+        },
+        {
+          "type": "benefit",
+          "settings": {
+            "heading": "Consistent quality standards",
+            "text": "Produced with a focus on reliability, clarity, and repeatable use."
+          }
+        },
+        {
+          "type": "trust_badge",
+          "settings": {
+            "label": "Veterinary-inspired formulation"
+          }
+        },
+        {
+          "type": "trust_badge",
+          "settings": {
+            "label": "Clear usage guidance"
+          }
+        },
+        {
+          "type": "trust_badge",
+          "settings": {
+            "label": "Quality-focused production"
+          }
+        },
+        {
+          "type": "trust_badge",
+          "settings": {
+            "label": "Developed for racing and breeding programs"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}
