@@ -1,0 +1,242 @@
+{% liquid
+  assign has_faq_items = false
+
+  for block in section.blocks
+    if block.settings.question != blank and block.settings.answer != blank
+      assign has_faq_items = true
+      break
+    endif
+  endfor
+%}
+
+<section
+  class="avicare-faq section section--page-width"
+  {% if section.settings.heading != blank %}
+    aria-labelledby="AvicareFaqHeading-{{ section.id }}"
+  {% endif %}
+>
+  <div class="avicare-faq__intro">
+    {% if section.settings.eyebrow != blank %}
+      <p class="avicare-faq__eyebrow">{{ section.settings.eyebrow | escape }}</p>
+    {% endif %}
+
+    {% if section.settings.heading != blank %}
+      <h2 id="AvicareFaqHeading-{{ section.id }}" class="avicare-faq__heading">
+        {{ section.settings.heading | escape }}
+      </h2>
+    {% endif %}
+
+    {% if section.settings.body != blank %}
+      <div class="avicare-faq__body rte">{{ section.settings.body }}</div>
+    {% endif %}
+  </div>
+
+  {% if has_faq_items %}
+    <div class="avicare-faq__items">
+      {% for block in section.blocks %}
+        {% if block.settings.question != blank and block.settings.answer != blank %}
+          <details class="avicare-faq__item" {{ block.shopify_attributes }}>
+            <summary class="avicare-faq__question">
+              <span>{{ block.settings.question | escape }}</span>
+              <span class="avicare-faq__icon" aria-hidden="true"></span>
+            </summary>
+            <div class="avicare-faq__answer rte">{{ block.settings.answer }}</div>
+          </details>
+        {% endif %}
+      {% endfor %}
+    </div>
+  {% endif %}
+</section>
+
+{% stylesheet %}
+  .avicare-faq {
+    padding-block: var(--avicare-space-8);
+    color: var(--avicare-text);
+    text-align: start;
+  }
+
+  .avicare-faq__intro,
+  .avicare-faq__items {
+    max-inline-size: 56rem;
+    margin-inline: auto;
+  }
+
+  .avicare-faq__intro {
+    margin-block-end: var(--avicare-space-7);
+  }
+
+  .avicare-faq__eyebrow {
+    margin: 0 0 var(--avicare-space-3);
+    color: var(--avicare-primary);
+    font-family: var(--avicare-font-accent);
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .avicare-faq__heading {
+    margin: 0;
+    color: var(--avicare-primary);
+    font-family: var(--avicare-font-heading);
+  }
+
+  .avicare-faq__body {
+    margin-block-start: var(--avicare-space-4);
+    color: var(--avicare-muted-text);
+    font-family: var(--avicare-font-body);
+  }
+
+  .avicare-faq__items {
+    border-block-start: 1px solid var(--avicare-border);
+  }
+
+  .avicare-faq__item {
+    border-block-end: 1px solid var(--avicare-border);
+  }
+
+  .avicare-faq__question {
+    display: flex;
+    align-items: center;
+    gap: var(--avicare-space-4);
+    min-block-size: 3.5rem;
+    padding-block: var(--avicare-space-4);
+    color: var(--avicare-primary);
+    font-family: var(--avicare-font-heading);
+    font-weight: 700;
+    cursor: pointer;
+    list-style: none;
+  }
+
+  .avicare-faq__question::-webkit-details-marker {
+    display: none;
+  }
+
+  .avicare-faq__question:focus-visible {
+    outline: 2px solid var(--avicare-primary);
+    outline-offset: 3px;
+    border-radius: var(--avicare-radius-sm);
+  }
+
+  .avicare-faq__icon {
+    flex: 0 0 auto;
+    margin-inline-start: auto;
+    color: var(--avicare-accent);
+    font-size: 1.25em;
+    line-height: 1;
+  }
+
+  .avicare-faq__icon::before {
+    content: '+';
+  }
+
+  .avicare-faq__item[open] .avicare-faq__icon::before {
+    content: '−';
+  }
+
+  .avicare-faq__answer {
+    padding-block-end: var(--avicare-space-5);
+    padding-inline-end: var(--avicare-space-7);
+    color: var(--avicare-muted-text);
+    font-family: var(--avicare-font-body);
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "AVICARE FAQ",
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  },
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "Frequently asked questions"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Everything you need to know"
+    },
+    {
+      "type": "richtext",
+      "id": "body",
+      "label": "Body",
+      "default": "<p>Find clear answers about AVICARE PRO products, usage, and nutritional support programs.</p>"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "faq",
+      "name": "FAQ item",
+      "settings": [
+        {
+          "type": "text",
+          "id": "question",
+          "label": "Question",
+          "default": "Question"
+        },
+        {
+          "type": "richtext",
+          "id": "answer",
+          "label": "Answer",
+          "default": "<p>Answer.</p>"
+        }
+      ]
+    }
+  ],
+  "max_blocks": 6,
+  "presets": [
+    {
+      "name": "AVICARE FAQ",
+      "category": "Text",
+      "blocks": [
+        {
+          "type": "faq",
+          "settings": {
+            "question": "What are AVICARE PRO products designed for?",
+            "answer": "<p>AVICARE PRO formulas are developed to provide targeted nutritional support for racing performance, recovery, breeding condition, respiratory wellness, growth, and daily condition.</p>"
+          }
+        },
+        {
+          "type": "faq",
+          "settings": {
+            "question": "How are the products used?",
+            "answer": "<p>Most products are administered through drinking water, feed, tablets, or capsules. Always follow the usage instructions provided on the individual product label.</p>"
+          }
+        },
+        {
+          "type": "faq",
+          "settings": {
+            "question": "Can different AVICARE PRO products be used together?",
+            "answer": "<p>Selected products may be combined as part of a structured care program. Follow the individual product instructions and avoid combining products with overlapping purposes unless the program specifically recommends it.</p>"
+          }
+        },
+        {
+          "type": "faq",
+          "settings": {
+            "question": "Are the products suitable for young pigeons?",
+            "answer": "<p>Some products may be suitable after weaning, while others are intended for adult racing or breeding pigeons. Always review the age and dosage guidance on the product label.</p>"
+          }
+        },
+        {
+          "type": "faq",
+          "settings": {
+            "question": "Where can I find a complete care program?",
+            "answer": "<p>Care programs will be available through the Programs and Science sections of the store. Customers may also contact AVICARE PRO for guidance on selecting an appropriate program.</p>"
+          }
+        },
+        {
+          "type": "faq",
+          "settings": {
+            "question": "Do AVICARE PRO products treat disease?",
+            "answer": "<p>AVICARE PRO products are nutritional support products and are not a substitute for professional veterinary diagnosis or treatment.</p>"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

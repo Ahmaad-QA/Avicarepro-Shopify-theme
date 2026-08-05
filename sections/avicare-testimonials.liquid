@@ -1,0 +1,298 @@
+<section
+  class="avicare-testimonials section section--page-width"
+  {% if section.settings.heading != blank %}
+    aria-labelledby="AvicareTestimonialsHeading-{{ section.id }}"
+  {% endif %}
+>
+  <div class="avicare-testimonials__intro">
+    {% if section.settings.eyebrow != blank %}
+      <p class="avicare-testimonials__eyebrow">{{ section.settings.eyebrow | escape }}</p>
+    {% endif %}
+
+    {% if section.settings.heading != blank %}
+      <h2 id="AvicareTestimonialsHeading-{{ section.id }}" class="avicare-testimonials__heading">
+        {{ section.settings.heading | escape }}
+      </h2>
+    {% endif %}
+
+    {% if section.settings.body != blank %}
+      <div class="avicare-testimonials__body rte">{{ section.settings.body }}</div>
+    {% endif %}
+  </div>
+
+  {% if section.blocks.size > 0 %}
+    <div class="avicare-testimonials__grid">
+      {% for block in section.blocks %}
+        {% liquid
+          assign rating = block.settings.rating | plus: 0
+          assign avatar_alt = block.settings.avatar.alt | default: block.settings.customer
+        %}
+
+        <figure class="avicare-testimonials__card" {{ block.shopify_attributes }}>
+          {% if rating > 0 %}
+            <div class="avicare-testimonials__rating" dir="ltr">
+              <span aria-hidden="true">
+                {% for star in (1..5) %}{% if star <= rating %}★{% else %}☆{% endif %}{% endfor %}
+              </span>
+              <span class="visually-hidden">{{ rating }}/5</span>
+            </div>
+          {% endif %}
+
+          {% if block.settings.quote != blank %}
+            <blockquote class="avicare-testimonials__quote">
+              <p>{{ block.settings.quote | escape | newline_to_br }}</p>
+            </blockquote>
+          {% endif %}
+
+          {% if block.settings.avatar != blank or block.settings.customer != blank or block.settings.location != blank %}
+            <figcaption class="avicare-testimonials__customer">
+              {% if block.settings.avatar != blank %}
+                {{ block.settings.avatar
+                  | image_url: width: 160
+                  | image_tag:
+                    widths: '80, 120, 160',
+                    sizes: '48px',
+                    class: 'avicare-testimonials__avatar',
+                    loading: 'lazy',
+                    alt: avatar_alt
+                }}
+              {% endif %}
+
+              {% if block.settings.customer != blank or block.settings.location != blank %}
+                <span class="avicare-testimonials__customer-details">
+                  {% if block.settings.customer != blank %}
+                    <strong>{{ block.settings.customer | escape }}</strong>
+                  {% endif %}
+                  {% if block.settings.location != blank %}
+                    <span>{{ block.settings.location | escape }}</span>
+                  {% endif %}
+                </span>
+              {% endif %}
+            </figcaption>
+          {% endif %}
+        </figure>
+      {% endfor %}
+    </div>
+  {% endif %}
+</section>
+
+{% stylesheet %}
+  .avicare-testimonials {
+    padding-block: var(--avicare-space-8);
+    color: var(--avicare-text);
+    text-align: start;
+  }
+
+  .avicare-testimonials__intro {
+    max-inline-size: 52rem;
+    margin-block-end: var(--avicare-space-7);
+  }
+
+  .avicare-testimonials__eyebrow {
+    margin: 0 0 var(--avicare-space-3);
+    color: var(--avicare-primary);
+    font-family: var(--avicare-font-accent);
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .avicare-testimonials__heading {
+    margin: 0;
+    color: var(--avicare-primary);
+    font-family: var(--avicare-font-heading);
+  }
+
+  .avicare-testimonials__body {
+    margin-block-start: var(--avicare-space-4);
+    color: var(--avicare-muted-text);
+    font-family: var(--avicare-font-body);
+  }
+
+  .avicare-testimonials__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--avicare-space-5);
+    inline-size: 100%;
+  }
+
+  .avicare-testimonials__card {
+    display: flex;
+    flex-direction: column;
+    min-inline-size: 0;
+    block-size: 100%;
+    margin: 0;
+    padding: var(--avicare-space-5);
+    border: 1px solid var(--avicare-border);
+    border-radius: var(--avicare-radius-md);
+    background: var(--avicare-surface);
+    box-shadow: var(--avicare-shadow-sm);
+  }
+
+  .avicare-testimonials__rating {
+    margin-block-end: var(--avicare-space-4);
+    color: var(--avicare-accent);
+    letter-spacing: 0.08em;
+  }
+
+  .avicare-testimonials__quote {
+    flex: 1;
+    margin: 0;
+    color: var(--avicare-text);
+    font-family: var(--avicare-font-body);
+  }
+
+  .avicare-testimonials__quote p {
+    margin: 0;
+  }
+
+  .avicare-testimonials__customer {
+    display: flex;
+    align-items: center;
+    gap: var(--avicare-space-3);
+    margin-block-start: var(--avicare-space-5);
+  }
+
+  .avicare-testimonials__avatar {
+    flex: 0 0 auto;
+    inline-size: 3rem;
+    block-size: 3rem;
+    border-radius: var(--avicare-radius-pill);
+    object-fit: cover;
+  }
+
+  .avicare-testimonials__customer-details {
+    display: grid;
+    gap: var(--avicare-space-1);
+    min-inline-size: 0;
+    color: var(--avicare-muted-text);
+  }
+
+  .avicare-testimonials__customer-details strong {
+    color: var(--avicare-primary);
+  }
+
+  @media screen and (min-width: 750px) {
+    .avicare-testimonials__grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media screen and (min-width: 990px) {
+    .avicare-testimonials__grid {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "AVICARE Testimonials",
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  },
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "Trusted by pigeon breeders"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "What breeders say"
+    },
+    {
+      "type": "richtext",
+      "id": "body",
+      "label": "Body",
+      "default": "<p>Discover how AVICARE PRO supports breeders through consistent quality and targeted nutritional solutions.</p>"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "testimonial",
+      "name": "Testimonial",
+      "settings": [
+        {
+          "type": "textarea",
+          "id": "quote",
+          "label": "Quote",
+          "default": "Placeholder testimonial."
+        },
+        {
+          "type": "text",
+          "id": "customer",
+          "label": "Customer name",
+          "default": "Customer name"
+        },
+        {
+          "type": "text",
+          "id": "location",
+          "label": "Location"
+        },
+        {
+          "type": "select",
+          "id": "rating",
+          "label": "Rating",
+          "options": [
+            {
+              "value": "0",
+              "label": "No rating"
+            },
+            {
+              "value": "1",
+              "label": "1"
+            },
+            {
+              "value": "2",
+              "label": "2"
+            },
+            {
+              "value": "3",
+              "label": "3"
+            },
+            {
+              "value": "4",
+              "label": "4"
+            },
+            {
+              "value": "5",
+              "label": "5"
+            }
+          ],
+          "default": "0"
+        },
+        {
+          "type": "image_picker",
+          "id": "avatar",
+          "label": "Avatar"
+        }
+      ]
+    }
+  ],
+  "max_blocks": 4,
+  "presets": [
+    {
+      "name": "AVICARE Testimonials",
+      "category": "Storytelling",
+      "blocks": [
+        {
+          "type": "testimonial"
+        },
+        {
+          "type": "testimonial"
+        },
+        {
+          "type": "testimonial"
+        },
+        {
+          "type": "testimonial"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

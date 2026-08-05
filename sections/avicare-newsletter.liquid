@@ -1,0 +1,169 @@
+<section
+  class="avicare-newsletter section section--page-width"
+  {% if section.settings.heading != blank %}
+    aria-labelledby="AvicareNewsletterHeading-{{ section.id }}"
+  {% endif %}
+>
+  <div class="avicare-newsletter__surface">
+    <div class="avicare-newsletter__content">
+      {% if section.settings.eyebrow != blank %}
+        <p class="avicare-newsletter__eyebrow">{{ section.settings.eyebrow | escape }}</p>
+      {% endif %}
+
+      {% if section.settings.heading != blank %}
+        <h2 id="AvicareNewsletterHeading-{{ section.id }}" class="avicare-newsletter__heading">
+          {{ section.settings.heading | escape }}
+        </h2>
+      {% endif %}
+
+      {% if section.settings.body != blank %}
+        <div class="avicare-newsletter__body rte">{{ section.settings.body }}</div>
+      {% endif %}
+    </div>
+
+    <div class="avicare-newsletter__form">
+      {% content_for 'block', type: 'email-signup', id: 'newsletter-form' %}
+
+      {% if section.settings.privacy_note != blank %}
+        <p class="avicare-newsletter__privacy">{{ section.settings.privacy_note | escape }}</p>
+      {% endif %}
+    </div>
+  </div>
+</section>
+
+{% stylesheet %}
+  .avicare-newsletter {
+    padding-block: var(--avicare-space-8);
+    color: var(--avicare-text);
+    text-align: start;
+  }
+
+  .avicare-newsletter__surface {
+    display: grid;
+    gap: var(--avicare-space-6);
+    padding: var(--avicare-space-6);
+    border: 1px solid var(--avicare-border);
+    border-block-start: 3px solid var(--avicare-accent);
+    border-radius: var(--avicare-radius-lg);
+    background: var(--avicare-surface);
+  }
+
+  .avicare-newsletter__content,
+  .avicare-newsletter__form {
+    min-inline-size: 0;
+  }
+
+  .avicare-newsletter__eyebrow {
+    margin: 0 0 var(--avicare-space-3);
+    color: var(--avicare-primary);
+    font-family: var(--avicare-font-accent);
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .avicare-newsletter__heading {
+    margin: 0;
+    color: var(--avicare-primary);
+    font-family: var(--avicare-font-heading);
+  }
+
+  .avicare-newsletter__body {
+    max-inline-size: 40rem;
+    margin-block-start: var(--avicare-space-4);
+    color: var(--avicare-muted-text);
+    font-family: var(--avicare-font-body);
+  }
+
+  .avicare-newsletter__form {
+    align-self: center;
+    max-inline-size: 36rem;
+    inline-size: 100%;
+  }
+
+  .avicare-newsletter .email-signup-block {
+    min-inline-size: 0;
+    inline-size: 100%;
+  }
+
+  .avicare-newsletter .email-signup__label {
+    display: block;
+    margin-block-end: var(--avicare-space-2);
+    color: var(--avicare-primary);
+    font-weight: 700;
+  }
+
+  .avicare-newsletter__privacy {
+    margin: var(--avicare-space-3) 0 0;
+    color: var(--avicare-muted-text);
+  }
+
+  @media screen and (min-width: 990px) {
+    .avicare-newsletter__surface {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      align-items: center;
+      gap: var(--avicare-space-7);
+      padding: var(--avicare-space-7);
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "AVICARE Newsletter",
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  },
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "Stay informed"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Join the AVICARE PRO community"
+    },
+    {
+      "type": "richtext",
+      "id": "body",
+      "label": "Body",
+      "default": "<p>Receive product updates, care program guidance, educational content, and selected offers directly in your inbox.</p>"
+    },
+    {
+      "type": "textarea",
+      "id": "privacy_note",
+      "label": "Privacy note",
+      "default": "By subscribing, you agree to receive marketing emails. You can unsubscribe at any time."
+    }
+  ],
+  "presets": [
+    {
+      "name": "AVICARE Newsletter",
+      "category": "Forms",
+      "blocks": {
+        "newsletter-form": {
+          "type": "email-signup",
+          "static": true,
+          "settings": {
+            "width": "fill",
+            "show_label": true,
+            "email_label": "Email address",
+            "placeholder": "Enter your email address",
+            "border_style": "all",
+            "input_style": "default",
+            "style_class": "button",
+            "display_type": "text",
+            "label": "Join the community",
+            "success_message": "Thank you for joining AVICARE PRO.",
+            "integrated_button": false
+          }
+        }
+      }
+    }
+  ]
+}
+{% endschema %}

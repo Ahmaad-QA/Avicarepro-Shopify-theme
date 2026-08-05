@@ -1,0 +1,184 @@
+{% liquid
+  assign has_primary_cta = false
+  assign has_secondary_cta = false
+
+  if section.settings.primary_label != blank and section.settings.primary_link != blank
+    assign has_primary_cta = true
+  endif
+
+  if section.settings.secondary_label != blank and section.settings.secondary_link != blank
+    assign has_secondary_cta = true
+  endif
+%}
+
+<section
+  class="avicare-final-cta section section--page-width"
+  {% if section.settings.heading != blank %}
+    aria-labelledby="AvicareFinalCtaHeading-{{ section.id }}"
+  {% endif %}
+>
+  <div class="avicare-final-cta__surface">
+    <div class="avicare-final-cta__content">
+      {% if section.settings.eyebrow != blank %}
+        <p class="avicare-final-cta__eyebrow">{{ section.settings.eyebrow | escape }}</p>
+      {% endif %}
+
+      {% if section.settings.heading != blank %}
+        <h2 id="AvicareFinalCtaHeading-{{ section.id }}" class="avicare-final-cta__heading">
+          {{ section.settings.heading | escape }}
+        </h2>
+      {% endif %}
+
+      {% if section.settings.body != blank %}
+        <div class="avicare-final-cta__body rte">{{ section.settings.body }}</div>
+      {% endif %}
+
+      {% if has_primary_cta or has_secondary_cta %}
+        <div class="avicare-final-cta__actions">
+          {% if has_primary_cta %}
+            <a class="button" href="{{ section.settings.primary_link }}">
+              {{ section.settings.primary_label | escape }}
+            </a>
+          {% endif %}
+
+          {% if has_secondary_cta %}
+            <a class="button button-secondary" href="{{ section.settings.secondary_link }}">
+              {{ section.settings.secondary_label | escape }}
+            </a>
+          {% endif %}
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</section>
+
+{% stylesheet %}
+  .avicare-final-cta {
+    padding-block: var(--avicare-space-8);
+    color: var(--avicare-text);
+    text-align: center;
+  }
+
+  .avicare-final-cta__surface {
+    padding-block: var(--avicare-space-8);
+    padding-inline: var(--avicare-space-5);
+    border: 1px solid var(--avicare-border);
+    border-block-start: 3px solid var(--avicare-accent);
+    border-radius: var(--avicare-radius-lg);
+    background: var(--avicare-surface);
+  }
+
+  .avicare-final-cta__content {
+    max-inline-size: 52rem;
+    margin-inline: auto;
+  }
+
+  .avicare-final-cta__eyebrow {
+    margin: 0 0 var(--avicare-space-3);
+    color: var(--avicare-primary);
+    font-family: var(--avicare-font-accent);
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .avicare-final-cta__heading {
+    margin: 0;
+    color: var(--avicare-primary);
+    font-family: var(--avicare-font-heading);
+  }
+
+  .avicare-final-cta__body {
+    margin-block-start: var(--avicare-space-4);
+    color: var(--avicare-muted-text);
+    font-family: var(--avicare-font-body);
+  }
+
+  .avicare-final-cta__actions {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--avicare-space-3);
+    max-inline-size: 28rem;
+    margin-block-start: var(--avicare-space-6);
+    margin-inline: auto;
+  }
+
+  @media screen and (min-width: 750px) {
+    .avicare-final-cta__surface {
+      padding-inline: var(--avicare-space-7);
+    }
+
+    .avicare-final-cta__actions {
+      flex-flow: row wrap;
+      justify-content: center;
+      align-items: center;
+      max-inline-size: none;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "AVICARE Final CTA",
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  },
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "Ready to build a stronger care program?"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Support performance at every stage"
+    },
+    {
+      "type": "richtext",
+      "id": "body",
+      "label": "Body",
+      "default": "<p>Explore AVICARE PRO formulas developed to support racing, breeding, respiratory wellness, recovery, and daily condition.</p>"
+    },
+    {
+      "type": "header",
+      "content": "Primary button"
+    },
+    {
+      "type": "text",
+      "id": "primary_label",
+      "label": "Label",
+      "default": "Shop all products"
+    },
+    {
+      "type": "url",
+      "id": "primary_link",
+      "label": "Link"
+    },
+    {
+      "type": "header",
+      "content": "Secondary button"
+    },
+    {
+      "type": "text",
+      "id": "secondary_label",
+      "label": "Label",
+      "default": "Explore care programs"
+    },
+    {
+      "type": "url",
+      "id": "secondary_link",
+      "label": "Link"
+    }
+  ],
+  "presets": [
+    {
+      "name": "AVICARE Final CTA",
+      "category": "Banners"
+    }
+  ]
+}
+{% endschema %}

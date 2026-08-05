@@ -6,6 +6,15 @@
   if block_settings.input_style == 'custom'
     assign is_custom_input = true
   endif
+
+  assign default_email_label = 'blocks.email_signup.label' | t
+  assign email_label = block_settings.email_label | default: default_email_label
+  assign default_email_placeholder = 'blocks.email_signup.placeholder' | t
+  assign email_placeholder = block_settings.placeholder | default: default_email_placeholder
+  assign default_button_label = 'actions.sign_up' | t
+  assign button_label = block_settings.label | default: default_button_label
+  assign default_success_message = 'blocks.email_signup.success' | t
+  assign success_message = block_settings.success_message | default: default_success_message
 %}
 {% render 'button-custom-styles', block_settings: block_settings, block_id: block.id %}
 <div
@@ -42,6 +51,12 @@
       endif
     -%}
 
+    <label
+      for="EmailInput-{{ block.id }}"
+      class="email-signup__label{% unless block_settings.show_label %} visually-hidden{% endunless %}"
+    >
+      {{ email_label | escape }}
+    </label>
     <div
       class="{{ input_group_classes }}"
       style="
@@ -50,12 +65,6 @@
         {% if is_custom_input %}{% render 'input-custom-styles', block_settings: block_settings %}{% endif %}
       "
     >
-      <label
-        for="EmailInput-{{ block.id }}"
-        class="visually-hidden"
-      >
-        {{ 'blocks.email_signup.label' | t }}
-      </label>
       <input
         id="EmailInput-{{ block.id }}"
         class="email-signup__input email-signup__input--{{ block_settings.border_style }} {% if is_custom_input %}{{ block_settings.input_type_preset }}{% else %}{{ settings.type_preset }}{% endif %} {{ block_settings.border_variation }}"
@@ -64,7 +73,7 @@
         autocorrect="off"
         autocapitalize="off"
         autocomplete="email"
-        placeholder="{{ 'blocks.email_signup.placeholder' | t }}"
+        placeholder="{{ email_placeholder | escape }}"
         required
         {% if form.errors and form.id == blank %}
           autofocus
@@ -77,11 +86,11 @@
       <button
         class="email-signup__button {% if block_settings.integrated_button or block_settings.border_style == 'underline' %}email-signup__button--integrated{% endif %} email-signup__button--{{ block_settings.display_type }} {{ block_settings.button_type_preset }} {{ block_settings.style_class }} {{ block_settings.style_class }}--{{ block.id }}"
         {% if block_settings.display_type != 'text' %}
-          aria-label="{{ 'actions.sign_up' | t }}"
+          aria-label="{{ button_label | escape }}"
         {% endif %}
       >
         {% if block_settings.display_type == 'text' %}
-          {{ block_settings.label }}
+          {{ button_label | escape }}
         {% else %}
           <svg
             viewBox="0 0 20 20"
@@ -125,7 +134,7 @@
         <span class="svg-wrapper icon-success">
           {{ 'icon-checkmark.svg' | inline_asset_content }}
         </span>
-        <p class="email-signup__message-text">{{ 'blocks.email_signup.success' | t }}</p>
+        <p class="email-signup__message-text">{{ success_message | escape }}</p>
       </div>
     {%- endif -%}
   {% endform %}
@@ -501,6 +510,24 @@
       "content": "t:content.input"
     },
     {
+      "type": "checkbox",
+      "id": "show_label",
+      "label": "Show email label",
+      "default": false
+    },
+    {
+      "type": "text",
+      "id": "email_label",
+      "label": "Email label",
+      "default": "Email address"
+    },
+    {
+      "type": "text",
+      "id": "placeholder",
+      "label": "Email placeholder",
+      "default": "Enter your email address"
+    },
+    {
       "type": "select",
       "id": "border_style",
       "label": "t:settings.border",
@@ -709,6 +736,12 @@
       "label": "t:settings.label",
       "default": "t:text_defaults.sign_up",
       "visible_if": "{{ block.settings.display_type == \"text\" }}"
+    },
+    {
+      "type": "text",
+      "id": "success_message",
+      "label": "Success message",
+      "default": "Thank you for subscribing."
     },
     {
       "type": "checkbox",
