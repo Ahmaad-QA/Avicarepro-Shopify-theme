@@ -292,6 +292,7 @@
   }
 
   .menu-list__link {
+    position: relative;
     font-family: var(--menu-top-level-font-family);
     font-style: var(--menu-top-level-font-style);
     font-weight: var(--menu-top-level-font-weight);
@@ -306,24 +307,57 @@
     cursor: pointer;
     height: 100%;
     margin-block: 0;
+    padding-block: var(--avicare-space-1);
+    transition: color var(--animation-speed), transform var(--animation-speed);
+
+    &::before {
+      content: '';
+      position: absolute;
+      inset-inline: 0;
+      inset-block-end: 0;
+      height: 2px;
+      border-radius: var(--avicare-radius-pill);
+      background: var(--avicare-primary);
+      transform: scaleX(0);
+      transform-origin: var(--avicare-text-align-start) center;
+      opacity: 0;
+      transition: transform var(--animation-speed), opacity var(--animation-speed);
+      pointer-events: none;
+    }
 
     &::after {
       content: '';
       position: absolute;
-      display: none;
-      top: var(--header-padding);
-      height: var(--box-height);
       left: 0;
       right: 0;
+      bottom: 0;
+      height: 2px;
+      border-radius: var(--avicare-radius-pill);
+      background: var(--avicare-primary);
+      transform: scaleX(0);
+      transform-origin: var(--avicare-text-align-start) center;
+      opacity: 0;
+      transition: transform var(--animation-speed), opacity var(--animation-speed);
+      pointer-events: none;
     }
 
     &[data-safety-box='true']::after {
       display: block;
+      opacity: 0.1;
+      transform: scaleX(1);
     }
 
     &:hover,
-    &:focus {
+    &:focus,
+    &.menu-list__link--active {
       color: var(--menu-top-level-font-color);
+    }
+
+    &:hover::before,
+    &:focus::before,
+    &.menu-list__link--active::before {
+      opacity: 1;
+      transform: scaleX(1);
     }
 
     @media screen and (min-width: 750px) {
@@ -393,6 +427,18 @@
     --submenu-padding-block-end: var(--padding-3xl);
 
     background-color: transparent;
+  }
+
+  .menu-list__submenu-inner,
+  .overflow-menu::part(overflow-list) {
+    background-color: var(--color-surface);
+    border: var(--style-border-popover);
+    box-shadow: var(--shadow-popover);
+    border-radius: var(--avicare-radius-lg);
+    padding-block-start: var(--submenu-padding-block-start);
+    padding-block-end: var(--submenu-padding-block-end);
+    padding-inline: var(--section-padding-inline);
+    overflow: hidden;
   }
 
   .header__row[style*='--border-bottom-width: 0px'] {
@@ -509,12 +555,29 @@
     transition: var(--submenu-content-animation);
     transform: translateY(calc(var(--full-open-header-height) - var(--submenu-height)));
 
+    /* Premium surface for menu subpanels */
+    background-color: var(--color-surface, var(--avicare-surface));
+    border: var(--style-border-popover);
+    box-shadow: var(--shadow-popover);
+    border-radius: var(--avicare-radius-lg);
+
     /* Make overflow menu scrollable when content exceeds viewport */
     max-height: calc(80vh - var(--header-height));
     overflow-y: auto;
     overflow-x: hidden;
     scrollbar-width: thin;
     scrollbar-color: rgb(var(--color-foreground-rgb) / var(--opacity-40)) transparent;
+  }
+
+  .overflow-menu::part(overflow) {
+    padding-block: var(--padding-lg);
+    padding-inline: var(--section-padding-inline);
+    gap: var(--padding-lg);
+  }
+
+  .overflow-menu::part(overflow-list) {
+    grid-template-columns: minmax(18rem, 24rem) 1fr;
+    gap: var(--padding-xl);
   }
 
   .mega-menu__link {
@@ -529,9 +592,11 @@
     text-decoration: none;
     display: inline-flex;
     padding: var(--padding-2xs) 0;
+    transition: color var(--animation-speed), transform var(--animation-speed);
 
     &:hover {
       color: var(--menu-child-active-font-color);
+      transform: translateY(-1px);
     }
   }
 
@@ -543,6 +608,8 @@
     line-height: var(--menu-parent-font-line-height);
     text-transform: var(--menu-parent-font-case);
     color: var(--menu-parent-font-color);
+    padding-block: var(--padding-2xs);
+    letter-spacing: 0.02em;
 
     &:hover {
       color: var(--menu-parent-active-font-color);

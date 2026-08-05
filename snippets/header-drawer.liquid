@@ -854,24 +854,33 @@
 
   .menu-drawer {
     position: fixed;
+    inset-inline-start: 0;
+    inset-inline-end: auto;
+    inset-block-start: 0;
     transform: translateX(-100%);
     visibility: hidden;
     height: var(--drawer-height);
     width: var(--drawer-width);
     max-width: var(--drawer-max-width);
     z-index: var(--layer-menu-drawer);
-    left: 0;
-    top: 0;
     padding: 0;
     background-color: var(--color-background);
     overflow: auto;
     display: flex;
-    border-right: var(--style-border-drawer);
+    border-inline-end: var(--style-border-drawer);
     flex-direction: column;
 
     @media screen and (min-width: 750px) {
       width: 25rem;
     }
+  }
+
+  :root[dir='rtl'] .menu-drawer {
+    inset-inline-start: auto;
+    inset-inline-end: 0;
+    transform: translateX(100%);
+    border-inline-end: none;
+    border-inline-start: var(--style-border-drawer);
   }
 
   /* When opening a submenu we don't want the first-level menu to be scrollable, so we reset the overflow  */
@@ -881,8 +890,7 @@
 
   .menu-drawer__backdrop {
     position: fixed;
-    top: 0;
-    left: 0;
+    inset: 0;
     width: 100vw;
     height: 100dvh;
     backdrop-filter: brightness(0.75);
@@ -1227,15 +1235,27 @@
   .menu-drawer__submenu {
     position: absolute;
     width: 100%;
-    top: 0;
+    inset-inline-start: 0;
+    inset-block-start: 0;
     height: 100dvh;
-    left: 0;
     background-color: var(--color-background);
     z-index: var(--layer-flat);
     transform: translateX(-5%);
     visibility: hidden;
     overflow-y: auto;
     opacity: 0;
+  }
+
+  :root[dir='rtl'] .menu-drawer__submenu {
+    transform: translateX(5%);
+  }
+
+  .menu-open > .menu-drawer__submenu:not(.menu-drawer__menu--childlist) {
+    transform: translateX(0);
+    visibility: visible;
+    opacity: 1;
+    display: flex;
+    flex-direction: column;
   }
 
   .menu-drawer__back-button > .svg-wrapper {
