@@ -43,6 +43,9 @@
 {% stylesheet %}
   .announcement-bar {
     border-block-end: var(--border-bottom-width) solid var(--color-border);
+    background: linear-gradient(135deg, rgb(var(--avicare-primary-rgb, 15 77 58) / 0.98), rgb(var(--avicare-primary-rgb, 15 77 58) / 0.9));
+    color: var(--color-background);
+    box-shadow: inset 0 -1px 0 rgb(255 255 255 / 0.12);
   }
 
   .announcement-bar__slider {
@@ -50,6 +53,7 @@
     flex-direction: row;
     align-items: center;
     position: relative;
+    min-block-size: clamp(2.75rem, 3.5vw, 3.5rem);
 
     @media screen and (max-width: 749px) {
       grid-column: 1 / -1;
@@ -60,8 +64,9 @@
     display: grid;
     grid: [stack] auto / [stack] auto;
     width: calc(100% - var(--button-size) * 2);
-    max-width: 680px;
+    max-width: 760px;
     margin-inline: auto;
+    padding-inline: var(--avicare-space-4);
   }
 
   .announcement-bar__slides > * {
@@ -69,12 +74,20 @@
   }
 
   .announcement-bar__slide {
-    transition: opacity 0.5s ease-in-out, visibility 0.5s ease-in-out;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-block-size: 100%;
+    padding-block: var(--avicare-space-2);
+    padding-inline: var(--avicare-space-3);
+    border-radius: var(--avicare-radius-pill);
+    transition: opacity var(--avicare-transition-base), visibility var(--avicare-transition-base), transform var(--avicare-transition-base);
     content-visibility: visible;
 
     &[aria-hidden='true'] {
       opacity: 0;
       visibility: hidden;
+      transform: translateY(2px);
     }
   }
 
@@ -84,7 +97,10 @@
   }
 
   .announcement-bar__slider slideshow-arrows .slideshow-control {
-    color: var(--color-foreground);
+    color: var(--color-background);
+    background: rgb(255 255 255 / 0.14);
+    border-radius: 50%;
+    backdrop-filter: blur(4px);
   }
 
   .announcement-bar__slider .slideshow-control {
@@ -96,6 +112,12 @@
     justify-content: center;
     opacity: 1;
     animation: none;
+    transition: background-color var(--avicare-transition-base), transform var(--avicare-transition-base);
+
+    &:hover {
+      background-color: rgb(255 255 255 / 0.24);
+      transform: scale(1.03);
+    }
 
     @media screen and (min-width: 750px) {
       --slideshow-control-offset: calc((var(--button-size) - var(--icon-size-xs)) / 2);
@@ -111,17 +133,67 @@
     height: var(--icon-size-xs);
   }
 
-  .announcement-bar__slide {
-    place-content: center;
-  }
-
-  .announcement-bar__text:first-child {
+  .announcement-bar__text {
     margin: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--avicare-space-2);
+    text-align: start;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    line-height: 1.25;
   }
 
   .announcement-bar__link {
     position: absolute;
     inset: 0;
+  }
+
+  .announcement-bar__icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    color: var(--avicare-accent);
+  }
+
+  .announcement-bar__meta {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--avicare-space-2);
+    flex-wrap: wrap;
+  }
+
+  .announcement-bar__cta {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding-inline: var(--avicare-space-3);
+    padding-block: var(--avicare-space-1);
+    border: 1px solid rgb(255 255 255 / 0.4);
+    border-radius: var(--avicare-radius-pill);
+    color: inherit;
+    text-decoration: none;
+    transition: background-color var(--avicare-transition-base), border-color var(--avicare-transition-base), transform var(--avicare-transition-base);
+
+    &:hover {
+      background-color: rgb(255 255 255 / 0.16);
+      border-color: rgb(255 255 255 / 0.6);
+      transform: translateY(-1px);
+    }
+  }
+
+  @media screen and (max-width: 749px) {
+    .announcement-bar__slide {
+      padding-inline: var(--avicare-space-2);
+    }
+
+    .announcement-bar__text {
+      font-size: 0.95rem;
+      text-align: center;
+    }
   }
 {% endstylesheet %}
 
