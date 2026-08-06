@@ -132,7 +132,7 @@
               "type": "text",
               "name": "Short description",
               "settings": {
-                "text": "{{ closest.product.description | strip_html | truncatewords: 35 }}",
+                "text": "{{ closest.product.description }}",
                 "width": "100%",
                 "max_width": "narrow",
                 "alignment": "left",
