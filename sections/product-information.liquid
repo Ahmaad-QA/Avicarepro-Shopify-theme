@@ -34,6 +34,14 @@
     assign current_variant = product.selected_or_first_available_variant
     # Get the initial quantity based on quantity rules
     assign initial_quantity = current_variant.quantity_rule.min | default: 1
+
+    if current_variant.available
+      assign sticky_add_to_cart_label = 'products.product.add_to_cart' | t
+    elsif current_variant == blank
+      assign sticky_add_to_cart_label = 'products.product.unavailable' | t
+    else
+      assign sticky_add_to_cart_label = 'products.product.sold_out' | t
+    endif
   %}
 
   <sticky-add-to-cart
@@ -126,6 +134,8 @@
         class="sticky-add-to-cart__button add-to-cart-button button"
         ref="addToCartButton"
         on:click="/handleAddToCartClick"
+        aria-label="{{ sticky_add_to_cart_label | escape }}"
+        data-variant-state="{% if current_variant == blank %}unavailable{% elsif current_variant.available %}available{% else %}sold-out{% endif %}"
         {% unless current_variant.available %}
           disabled
         {% endunless %}
@@ -184,41 +194,32 @@
 %}
 
 {% stylesheet %}
+  .product-information .text-block:not(.text-block--align-center):not(.text-block--align-right) > * {
+    text-align: start;
+  }
+
   .sticky-add-to-cart__bar {
     position: fixed;
-    bottom: 20px;
-    left: 50%;
+    inset-block-end: var(--avicare-space-5);
+    inset-inline: 0;
+    margin-inline: auto;
     opacity: 0;
-    transform: translateX(-50%) translateY(calc(100% + 40px));
+    transform: translateY(calc(100% + var(--avicare-space-7)));
     z-index: calc(var(--layer-sticky) - 1); /* Below sticky header */
-    display: block;
-    width: 600px;
-    border-radius: calc(
-      var(--style-border-radius-buttons-primary) + min(var(--padding-sm), var(--style-border-radius-buttons-primary))
-    );
-    box-shadow: var(--shadow-popover);
+    inline-size: min(37.5rem, calc(100% - (2 * var(--avicare-space-5))));
+    border: 1px solid var(--avicare-border);
+    border-radius: var(--avicare-radius-md);
+    background: var(--avicare-surface);
+    box-shadow: var(--avicare-shadow-md);
     padding: var(--padding-sm);
-    /* Layout styling */
     display: flex;
     align-items: center;
     gap: var(--gap-md);
+    color: var(--avicare-text);
 
     @starting-style {
       opacity: 0;
-      transform: translateX(-50%) translateY(calc(100% + 40px));
-    }
-
-    &::before {
-      --border: 2px;
-      content: '';
-      position: absolute;
-      inset: calc(var(--border) * -1);
-      background: linear-gradient(var(--color-background) 0 100%), linear-gradient(hsl(0 0% 0% / 0.15) 0 100%);
-      background-clip: content-box, border-box;
-      border: var(--border) solid #0000;
-      border-radius: inherit;
-      z-index: -1;
-      backdrop-filter: blur(20px) saturate(180%) brightness(1.5);
+      transform: translateY(calc(100% + var(--avicare-space-7)));
     }
   }
 
@@ -232,38 +233,38 @@
   }
 
   .sticky-add-to-cart__bar[data-stuck='true'] {
-    transform: translateX(-50%) translateY(0%);
+    transform: translateY(0%);
     opacity: 1;
   }
 
-  sticky-add-to-cart:not([data-variant-available='true']) .sticky-add-to-cart__bar {
+  sticky-add-to-cart:has(.sticky-add-to-cart__button[data-variant-state='unavailable']) .sticky-add-to-cart__bar {
     opacity: 0;
-    transform: translateX(-50%) translateY(calc(100% + 40px));
+    transform: translateY(calc(100% + var(--avicare-space-7)));
     display: none;
   }
 
   .sticky-add-to-cart__info[data-has-image='false'] {
-    padding-left: var(--padding-lg);
+    padding-inline-start: var(--padding-lg);
   }
 
   .sticky-add-to-cart__image {
     flex-shrink: 0;
     aspect-ratio: 1;
-    height: var(--height-buy-buttons);
+    block-size: var(--height-buy-buttons);
     overflow: hidden;
     border-radius: var(--style-border-radius-buttons-primary);
     background: var(--color-background-secondary);
   }
 
   .sticky-add-to-cart__image-img {
-    width: 100%;
-    height: 100%;
+    inline-size: 100%;
+    block-size: 100%;
     object-fit: cover;
   }
 
   .sticky-add-to-cart__info {
     flex: 1;
-    min-width: 0; /* Allow text truncation */
+    min-inline-size: 0; /* Allow text truncation */
   }
 
   .sticky-add-to-cart__title {
@@ -279,7 +280,7 @@
   .sticky-add-to-cart__variant {
     color: rgb(var(--color-foreground-rgb) / var(--opacity-subdued-text));
     font-size: var(--font-paragraph-small--size);
-    margin-top: var(--margin-3xs);
+    margin-block-start: var(--margin-3xs);
   }
 
   .sticky-add-to-cart__price {
@@ -287,21 +288,20 @@
   }
 
   .sticky-add-to-cart__button {
-    height: var(--height-buy-buttons);
+    block-size: var(--height-buy-buttons);
     position: relative;
   }
 
   /* Mobile adjustments */
   @media screen and (max-width: 749px) {
     .sticky-add-to-cart__bar {
-      bottom: 0;
-      width: 100%;
-      max-width: none;
+      inset-block-end: 0;
+      inline-size: 100%;
+      max-inline-size: none;
       border-radius: 0;
-
-      &::before {
-        --border: 1px;
-      }
+      border: 0;
+      border-block-start: 1px solid var(--avicare-border);
+      padding-block-end: calc(var(--padding-sm) + env(safe-area-inset-bottom));
     }
 
     .sticky-add-to-cart__bar .add-to-cart-text__content {
@@ -309,7 +309,7 @@
     }
 
     .sticky-add-to-cart__info[data-has-image='false'] {
-      padding-left: 0;
+      padding-inline-start: 0;
     }
 
     .sticky-add-to-cart__title {
@@ -325,7 +325,7 @@
     }
 
     .sticky-add-to-cart__button {
-      width: var(--height-buy-buttons);
+      inline-size: var(--height-buy-buttons);
     }
 
     sticky-add-to-cart:not([data-variant-available='true']) .add-to-cart-text__content {
@@ -333,7 +333,7 @@
     }
 
     sticky-add-to-cart:not([data-variant-available='true']) .sticky-add-to-cart__button {
-      width: auto;
+      inline-size: auto;
     }
   }
 

@@ -13,6 +13,13 @@
       assign classes = 'resource-list__carousel'
   endcase
 
+  assign show_program_intro = false
+  if section.settings.enable_program_presentation
+    if section.settings.program_eyebrow != blank or section.settings.program_heading != blank or section.settings.program_body != blank
+      assign show_program_intro = true
+    endif
+  endif
+
   capture styles
     echo '--column-count-mobile: ' | append: section.settings.mobile_columns | append: ';'
     echo '--resource-list-column-gap-desktop: ' | append: section.settings.columns_gap | append: 'px;'
@@ -35,7 +42,11 @@
 {% render 'product-recommendations-styles' %}
 <product-recommendations
   id="product-recommendations-{{ section.id }}"
-  class="product-recommendations"
+  class="product-recommendations{% if section.settings.enable_program_presentation %} product-recommendations--program{% endif %}"
+  {% if section.settings.enable_program_presentation and section.settings.program_heading != blank %}
+    role="region"
+    aria-labelledby="AvicareProgramHeading-{{ section.id }}"
+  {% endif %}
   data-url="{{ routes.product_recommendations_url }}?limit={{ section.settings.max_products }}"
   data-section-id="{{ section.id }}"
   data-product-id="{{ section.settings.product.id | default: product.id }}"
@@ -70,6 +81,28 @@
     "
   >
     <div class="section-resource-list__content">
+      {% if show_program_intro %}
+        <div class="product-recommendations__program-intro">
+          {% if section.settings.program_eyebrow != blank %}
+            <p class="product-recommendations__program-eyebrow">
+              {{ section.settings.program_eyebrow | escape }}
+            </p>
+          {% endif %}
+
+          {% if section.settings.program_heading != blank %}
+            <h2 id="AvicareProgramHeading-{{ section.id }}" class="product-recommendations__program-heading">
+              {{ section.settings.program_heading | escape }}
+            </h2>
+          {% endif %}
+
+          {% if section.settings.program_body != blank %}
+            <div class="product-recommendations__program-body rte">
+              {{ section.settings.program_body }}
+            </div>
+          {% endif %}
+        </div>
+      {% endif %}
+
       {% content_for 'blocks' %}
     </div>
 
@@ -187,8 +220,61 @@
         {% endfor %}
       </div>
     {%- endif -%}
+
+    {% if section.settings.enable_program_presentation
+      and section.settings.program_cta_label != blank
+      and section.settings.program_cta_link != blank
+    %}
+      {% if recommendations.performed or section.settings.product == blank %}
+        <div class="product-recommendations__program-actions">
+          <a class="button button-secondary" href="{{ section.settings.program_cta_link }}">
+            {{ section.settings.program_cta_label | escape }}
+          </a>
+        </div>
+      {% endif %}
+    {% endif %}
   </div>
 </product-recommendations>
+
+{% stylesheet %}
+  .product-recommendations .text-block:not(.text-block--align-center):not(.text-block--align-right) > * {
+    text-align: start;
+  }
+
+  .product-recommendations__program-intro {
+    max-inline-size: 52rem;
+    text-align: start;
+  }
+
+  .product-recommendations__program-eyebrow {
+    margin: 0;
+    margin-block-end: var(--avicare-space-3);
+    color: var(--avicare-primary);
+    font-family: var(--avicare-font-accent);
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .product-recommendations__program-heading {
+    margin: 0;
+    color: var(--avicare-primary);
+    font-family: var(--avicare-font-heading);
+  }
+
+  .product-recommendations__program-body {
+    margin-block-start: var(--avicare-space-4);
+    color: var(--avicare-muted-text);
+    font-family: var(--avicare-font-body);
+  }
+
+  .product-recommendations__program-actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    margin-block-start: var(--avicare-space-5);
+  }
+{% endstylesheet %}
 
 {% schema %}
 {
@@ -229,6 +315,50 @@
     }
   ],
   "settings": [
+    {
+      "type": "header",
+      "content": "AVICARE presentation"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_program_presentation",
+      "label": "Enable Complete the Program presentation",
+      "default": false
+    },
+    {
+      "type": "text",
+      "id": "program_eyebrow",
+      "label": "Eyebrow",
+      "default": "Complete the program",
+      "visible_if": "{{ section.settings.enable_program_presentation }}"
+    },
+    {
+      "type": "text",
+      "id": "program_heading",
+      "label": "Heading",
+      "default": "Recommended with this product",
+      "visible_if": "{{ section.settings.enable_program_presentation }}"
+    },
+    {
+      "type": "richtext",
+      "id": "program_body",
+      "label": "Body",
+      "default": "<p>Explore complementary AVICARE PRO formulas that may support a more complete care, performance, or recovery program.</p>",
+      "visible_if": "{{ section.settings.enable_program_presentation }}"
+    },
+    {
+      "type": "text",
+      "id": "program_cta_label",
+      "label": "CTA label",
+      "default": "View all products",
+      "visible_if": "{{ section.settings.enable_program_presentation }}"
+    },
+    {
+      "type": "url",
+      "id": "program_cta_link",
+      "label": "CTA link",
+      "visible_if": "{{ section.settings.enable_program_presentation }}"
+    },
     {
       "type": "product",
       "id": "product",
@@ -556,6 +686,104 @@
         }
       },
       "block_order": ["header"]
+    },
+    {
+      "name": "AVICARE Complete Program",
+      "category": "Product",
+      "settings": {
+        "enable_program_presentation": true,
+        "program_eyebrow": "Complete the program",
+        "program_heading": "Recommended with this product",
+        "program_body": "<p>Explore complementary AVICARE PRO formulas that may support a more complete care, performance, or recovery program.</p>",
+        "program_cta_label": "View all products",
+        "product": "{{ closest.product }}",
+        "recommendation_type": "complementary",
+        "layout_type": "grid",
+        "carousel_on_mobile": false,
+        "max_products": 4,
+        "columns": 4,
+        "mobile_columns": "2",
+        "columns_gap": 16,
+        "rows_gap": 24,
+        "icons_style": "arrow",
+        "icons_shape": "none",
+        "section_width": "page-width",
+        "gap": 28,
+        "padding-block-start": 48,
+        "padding-block-end": 48
+      },
+      "blocks": {
+        "static-product-card": {
+          "type": "_product-card",
+          "name": "t:names.product_card",
+          "static": true,
+          "settings": {
+            "product_card_gap": 4
+          },
+          "blocks": {
+            "product-card-gallery": {
+              "type": "_product-card-gallery",
+              "name": "t:names.product_card_media",
+              "settings": {
+                "image_ratio": "adapt",
+                "border": "none",
+                "border_width": 1,
+                "border_opacity": 100,
+                "border_radius": 0,
+                "padding-block-start": 0,
+                "padding-block-end": 0,
+                "padding-inline-start": 0,
+                "padding-inline-end": 0
+              }
+            },
+            "product_title": {
+              "type": "product-title",
+              "name": "t:names.product_title",
+              "settings": {
+                "width": "fit-content",
+                "max_width": "normal",
+                "alignment": "left",
+                "type_preset": "paragraph",
+                "font": "var(--font-body--family)",
+                "font_size": "1rem",
+                "line_height": "normal",
+                "letter_spacing": "normal",
+                "case": "none",
+                "wrap": "pretty",
+                "background": false,
+                "corner_radius": 0,
+                "padding-block-start": 4,
+                "padding-block-end": 0,
+                "padding-inline-start": 0,
+                "padding-inline-end": 0
+              }
+            },
+            "price": {
+              "type": "price",
+              "name": "t:names.product_price",
+              "settings": {
+                "show_sale_price_first": true,
+                "show_installments": false,
+                "show_tax_info": false,
+                "type_preset": "h6",
+                "width": "100%",
+                "alignment": "left",
+                "font": "var(--font-body--family)",
+                "font_size": "1rem",
+                "line_height": "normal",
+                "letter_spacing": "normal",
+                "case": "none",
+                "padding-block-start": 0,
+                "padding-block-end": 0,
+                "padding-inline-start": 0,
+                "padding-inline-end": 0
+              }
+            }
+          },
+          "block_order": ["product-card-gallery", "product_title", "price"]
+        }
+      },
+      "block_order": []
     }
   ]
 }

@@ -1,0 +1,291 @@
+{%- capture information_markup -%}
+  {%- for block in section.blocks -%}
+    {%- assign content_text = block.settings.content | strip_html | strip -%}
+    {%- assign note_text = block.settings.note | strip_html | strip -%}
+    {%- if block.settings.heading != blank
+      or content_text != blank
+      or block.settings.unit_label != blank
+      or note_text != blank
+    -%}
+      <div class="avicare-product-composition__card" {{ block.shopify_attributes }}>
+        {%- if block.settings.heading != blank or block.settings.unit_label != blank -%}
+          <div class="avicare-product-composition__card-header">
+            {%- if block.settings.heading != blank -%}
+              <h3 class="avicare-product-composition__card-heading">{{ block.settings.heading | escape }}</h3>
+            {%- endif -%}
+
+            {%- if block.settings.unit_label != blank -%}
+              <span class="avicare-product-composition__unit">{{ block.settings.unit_label | escape }}</span>
+            {%- endif -%}
+          </div>
+        {%- endif -%}
+
+        {%- if content_text != blank -%}
+          <div class="avicare-product-composition__content rte">
+            {{ block.settings.content }}
+          </div>
+        {%- endif -%}
+
+        {%- if note_text != blank -%}
+          <div class="avicare-product-composition__note rte">
+            {{ block.settings.note }}
+          </div>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+  {%- endfor -%}
+{%- endcapture -%}
+
+<section
+  class="avicare-product-composition section section--page-width"
+  {% if section.settings.heading != blank %}
+    aria-labelledby="AvicareProductCompositionHeading-{{ section.id }}"
+  {% endif %}
+>
+  <div class="avicare-product-composition__intro">
+    {% if section.settings.eyebrow != blank %}
+      <p class="avicare-product-composition__eyebrow">{{ section.settings.eyebrow | escape }}</p>
+    {% endif %}
+
+    {% if section.settings.heading != blank %}
+      <h2 id="AvicareProductCompositionHeading-{{ section.id }}" class="avicare-product-composition__heading">
+        {{ section.settings.heading | escape }}
+      </h2>
+    {% endif %}
+
+    {% if section.settings.body != blank %}
+      <div class="avicare-product-composition__body rte">{{ section.settings.body }}</div>
+    {% endif %}
+  </div>
+
+  {%- assign information_markup = information_markup | strip -%}
+  {%- if information_markup != blank -%}
+    <div
+      class="avicare-product-composition__grid"
+      style="--avicare-composition-columns: {{ section.settings.columns_desktop }};"
+    >
+      {{ information_markup }}
+    </div>
+  {%- endif -%}
+</section>
+
+{% stylesheet %}
+  .avicare-product-composition {
+    padding-block: var(--avicare-space-8);
+    color: var(--avicare-text);
+    text-align: start;
+  }
+
+  .avicare-product-composition__intro {
+    max-inline-size: 52rem;
+    margin-block-end: var(--avicare-space-7);
+  }
+
+  .avicare-product-composition__eyebrow {
+    margin: 0;
+    margin-block-end: var(--avicare-space-3);
+    color: var(--avicare-primary);
+    font-family: var(--avicare-font-accent);
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .avicare-product-composition__heading {
+    margin: 0;
+    color: var(--avicare-primary);
+    font-family: var(--avicare-font-heading);
+  }
+
+  .avicare-product-composition__body {
+    margin-block-start: var(--avicare-space-4);
+    color: var(--avicare-muted-text);
+    font-family: var(--avicare-font-body);
+  }
+
+  .avicare-product-composition__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--avicare-space-5);
+    inline-size: 100%;
+  }
+
+  .avicare-product-composition__card {
+    min-inline-size: 0;
+    block-size: 100%;
+    padding: var(--avicare-space-5);
+    border: 1px solid var(--avicare-border);
+    border-radius: var(--avicare-radius-md);
+    background: var(--avicare-surface);
+    box-shadow: var(--avicare-shadow-sm);
+    overflow-wrap: anywhere;
+  }
+
+  .avicare-product-composition__card-header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: var(--avicare-space-2) var(--avicare-space-4);
+  }
+
+  .avicare-product-composition__card-heading {
+    margin: 0;
+    color: var(--avicare-primary);
+    font-family: var(--avicare-font-heading);
+  }
+
+  .avicare-product-composition__unit {
+    padding: var(--avicare-space-1) var(--avicare-space-2);
+    border: 1px solid var(--avicare-border);
+    border-radius: var(--avicare-radius-pill);
+    background: var(--avicare-background);
+    color: var(--avicare-muted-text);
+    font-family: var(--avicare-font-body);
+    font-size: var(--font-paragraph-small--size);
+    line-height: var(--font-paragraph-small--line-height);
+    unicode-bidi: isolate;
+  }
+
+  .avicare-product-composition__content {
+    margin-block-start: var(--avicare-space-4);
+    color: var(--avicare-text);
+    font-family: var(--avicare-font-body);
+  }
+
+  .avicare-product-composition__note {
+    margin-block-start: var(--avicare-space-4);
+    padding-block-start: var(--avicare-space-3);
+    border-block-start: 1px solid var(--avicare-border);
+    color: var(--avicare-muted-text);
+    font-family: var(--avicare-font-body);
+    font-size: var(--font-paragraph-small--size);
+    line-height: var(--font-paragraph-small--line-height);
+  }
+
+  @media screen and (min-width: 750px) {
+    .avicare-product-composition__grid {
+      grid-template-columns: repeat(var(--avicare-composition-columns), minmax(0, 1fr));
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "AVICARE Composition",
+  "enabled_on": {
+    "templates": ["product"]
+  },
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "Product composition"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Ingredients and nutritional information"
+    },
+    {
+      "type": "richtext",
+      "id": "body",
+      "label": "Body",
+      "default": "<p>Review the approved product label for the exact composition, ingredient amounts, and nutritional values for this formula.</p>"
+    },
+    {
+      "type": "select",
+      "id": "columns_desktop",
+      "label": "Desktop columns",
+      "options": [
+        {
+          "value": "1",
+          "label": "One"
+        },
+        {
+          "value": "2",
+          "label": "Two"
+        }
+      ],
+      "default": "2"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "information",
+      "name": "Information",
+      "limit": 8,
+      "settings": [
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Heading",
+          "default": "Information heading"
+        },
+        {
+          "type": "richtext",
+          "id": "content",
+          "label": "Content",
+          "default": "<p>Add approved product information from the product label.</p>"
+        },
+        {
+          "type": "text",
+          "id": "unit_label",
+          "label": "Unit label"
+        },
+        {
+          "type": "richtext",
+          "id": "note",
+          "label": "Note"
+        }
+      ]
+    }
+  ],
+  "max_blocks": 8,
+  "presets": [
+    {
+      "name": "AVICARE Composition",
+      "category": "Product",
+      "blocks": [
+        {
+          "type": "information",
+          "settings": {
+            "heading": "Ingredients",
+            "content": "<p>Add the exact ingredient list shown on the approved product label.</p>"
+          }
+        },
+        {
+          "type": "information",
+          "settings": {
+            "heading": "Active ingredients",
+            "content": "<p>Add active ingredient names and exact amounts only when verified from the approved product label.</p>"
+          }
+        },
+        {
+          "type": "information",
+          "settings": {
+            "heading": "Analytical constituents",
+            "content": "<p>Add verified analytical values and units from the approved product label.</p>"
+          }
+        },
+        {
+          "type": "information",
+          "settings": {
+            "heading": "Product format",
+            "content": "<p>Add the approved format, quantity, tablet count, capsule count, powder weight, or package size.</p>"
+          }
+        },
+        {
+          "type": "information",
+          "settings": {
+            "heading": "Additional notes",
+            "content": "<p>Add only approved product-specific composition or nutritional notes.</p>"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}
